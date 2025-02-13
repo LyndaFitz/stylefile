@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")  // ✅ Base URL
-@CrossOrigin(origins = "*") // ✅ Allow frontend access
+@RequestMapping("/users")
+@CrossOrigin(origins = "*") // Allow frontend access
 public class UserController {
 
     @Autowired
@@ -22,19 +22,18 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/{userId}")  // ✅ Matches String userId
+    @GetMapping("/{userId}") // ✅ Ensure correct variable name
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
         Optional<User> user = userRepository.findById(userId);
-        return user.map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.notFound().build());
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @PutMapping("/{userId}")  // ✅ Matches String userId
+    @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody User updatedUser) {
         return userRepository.findById(userId).map(user -> {
             user.setUserName(updatedUser.getUserName());
@@ -42,14 +41,12 @@ public class UserController {
             user.setHeight(updatedUser.getHeight());
             user.setWeight(updatedUser.getWeight());
             user.setBodyType(updatedUser.getBodyType());
-            user.setBustSize(updatedUser.getBustSize());
-            user.setCupSize(updatedUser.getCupSize());
             user.setBraSize(updatedUser.getBraSize());
             return ResponseEntity.ok(userRepository.save(user));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{userId}")  // ✅ Matches String userId
+    @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
