@@ -22,15 +22,10 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/{userId}") // ✅ Ensure correct variable name
+    @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
         Optional<User> user = userRepository.findById(userId);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userRepository.save(user));
     }
 
     @PutMapping("/{userId}")
@@ -45,6 +40,11 @@ public class UserController {
             return ResponseEntity.ok(userRepository.save(user));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
+    @PostMapping("/{userId}")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(userRepository.save(user));
+    }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
@@ -54,5 +54,7 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
-}
+    }
+
+
 
